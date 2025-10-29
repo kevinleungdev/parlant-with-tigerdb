@@ -1,0 +1,6 @@
+parlant==3.0.3
+openai==1.109.1
+
+psycopg2-binary
+sentence-transformers
+

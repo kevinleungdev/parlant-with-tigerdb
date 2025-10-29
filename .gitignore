@@ -1,0 +1,5 @@
+.env
+.gemini/
+.vscode/
+parlant-data/
+*.ipynb*
