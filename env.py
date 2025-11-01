@@ -6,8 +6,7 @@ from pathlib import Path
 # Load .env file
 ####################################
 
-
-ENV_FILE_PATH = Path(__file__).resolve()
+ENV_FILE_PATH = Path(__file__).resolve().parent
 
 try:
     from dotenv import load_dotenv, find_dotenv
@@ -26,6 +25,13 @@ if os.environ.get("OPENAI_API_KEY") is None:
 # TIMESCALE DATABASE CONFIGURATION
 ####################################
 
-
 TIMESCALE_DATABASE_URL = os.getenv("TIMESCALE_DATABASE_URL", None)
 TIMESCALE_DATABASE_PASSWORD = os.getenv("TIMESCALE_DATABASE_PASSWORD", None)
+
+
+####################################
+# EMBEDDING AND RANKING
+####################################
+JINA_API_KEY = os.getenv("JINA_API_KEY", None)
+
+VECTOR_LENGTH = int(os.getenv("VECTOR_LENGTH", 1024))
