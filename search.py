@@ -1,4 +1,5 @@
 from typing import Any
+from env import SEMANTIC_SCORE_THRESHOLD
 
 
 class MultiSearchTool:
@@ -45,21 +46,25 @@ class MultiSearchTool:
         """Vector-based semantic search using Jina embeddings"""
         try:
             # Generate query embedding
-            query_embeddings = self.jina.embed([query], task="retrieval.passage")
+            query_embeddings = self.jina.embed([query], task="retrieval.query")
 
             with self.conn.cursor() as cur:
                 cur.execute("""
-                    SELECT id, title, content,
-                           1 - (embedding <=> %s::vector) AS score,
-                           'semantic' AS search_type
-                    FROM documents
-                    ORDER BY embedding <=> %s::vector
+                    SELECT * FROM (
+                        SELECT id, title, content,
+                            1 - (embedding <=> %s::vector) AS score,
+                            'semantic' AS search_type
+                        FROM documents
+                    ) a
+                    WHERE score >= %s
+                    ORDER BY score DESC
                     LIMIT %s
                 """, (
-                    query_embeddings[0], 
-                    query_embeddings[0], 
-                    limit
+                    query_embeddings[0],
+                    SEMANTIC_SCORE_THRESHOLD,
+                    limit,
                 ))
+
                 return cur.fetchall()
             
         except Exception as e:
